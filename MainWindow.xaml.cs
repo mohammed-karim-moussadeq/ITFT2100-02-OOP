@@ -1,7 +1,6 @@
 ﻿// Author:  Kyle Chapman AND Karim El Moussadeq
-// (please don't leave the previous line saying "AND YOU".)
 // Created: October 1, 2025
-// Updated: 
+// Updated: November 16, 2025
 // Description:
 // Code for a WPF form to display car objects. Currently, it is purely for
 // display, and shows a car's make, model, year and price. Creating the car
@@ -9,6 +8,7 @@
 // Functionality should exist to move through the list of car objects.
 // See the Car class (which you will create in a separate file!) for more details.
 
+using CarViewer3;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,229 +20,113 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CarViewer
+namespace CarViewer3
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        // "Global" or "class-level" variables, including a list for cars.
-        // If there's an issue on this line, it means you haven't defined a Car class (which is the point of the exercise).
-        List<Car> listOfCars = new List<Car>();
-        int currentIndex = 0;
-    
-        /// <summary>
-        /// Constructor for the form class.
-        /// </summary>
+        // Use Vehicle list so it can hold Cars AND Motorcycles
+        private List<Vehicle> listOfVehicles = new List<Vehicle>();
+        private int currentIndex = 0;
+
         public MainWindow()
         {
-            InitializeComponent();
-        }
+            InitializedComponent();
+            UpdateStatus("Application started");
 
-        /// <summary>
-        /// When the form loads, initialize the list of cars.
-        /// </summary>
-        private void FormLoad(object sender, RoutedEventArgs e)
-        {
-            // Create some default car objects.
-            // You'll be encouraged to add a few more!
-            // If these lines are in error, either the Car class is missing or there's an issue with its parametrized constructor.
-            var carOne = new Car("Hyundai", "Tucson", 2020, 17500, true);
-            var carTwo = new Car("Dodge", "Caliber", 2012, 11499, true);
-            var carThree = new Car("Volkswagen", "Beetle", 1979, 5999, false);
-            var carFour = new Car("Porsche", "992 911GT3 RS", 2023, 124000, true);
-            var carFive = new Car("BMW", "M4", 2021, 69999, true);
+            // Populate vehicle type selector
+            ComboBoxMake.Items.Add("Car");
+            ComboBoxMake.Items.Add("Motorcycle");
 
-            // Add the car objects into the list.
-            // It's also technically possible to manage the list within the class.
-            // Can you think of any positives or negatives of this?
-            listOfCars.Add(carOne);
-            listOfCars.Add(carTwo);
-            listOfCars.Add(carThree);
-            listOfCars.Add(carFour);
-            listOfCars.Add(carFive);
-
-            // Show the first car.
-            DisplayCar(listOfCars[0]);
-
-            // cars make
-            string[] makes = { "Hyundai", "Dodge", "Volkswagen", "Porsche", "BMW", "Audi", "Toyota", "Ford", "Chevrolet", "Nissan", "Ferrari", "Bentley", "Lamborghini", "Rolls Roys", "Aston Martin", "Cadillac", "Alfa Romeo", "Maclaren", "Cupra", "Seat"};
-            foreach (var make in makes)
-            {
-               comboMake.Items.Add(make);
-            }
-
-            // cars years
+            // Populate years (last 50 years)
             for (int year = DateTime.Now.Year; year >= DateTime.Now.Year - 49; year--)
             {
-                comboYear.Items.Add(year.ToString());
+                ComboBoxYear.Items.Add(year.ToString());
             }
-
-           
-
         }
 
-        /// <summary>
-        /// Displays a car object in the form.
-        /// </summary>
-        /// <param name="currentCar">A valid car object.</param>
-        private void DisplayCar(Car currentCar)
+        private void InitializedComponent()
         {
-            // If the method signature above has an error in it, the Car class doesn't exist.
-            // If the lines below cause errors, then the Car class' properties aren't set up correctly.
-
-            // Set form control properties based on values of the car passed in.
-            comboMake.Text = currentCar.Make;
-            textModel.Text = currentCar.Model;
-            comboYear.Text = currentCar.Year.ToString();
-            textPrice.Text = currentCar.Price.ToString();
-
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Display the first car from the list in the form.
-        /// </summary>
-        private void ShowFirstCar(object sender, RoutedEventArgs e)
+        private void ButtonAddVehicle_Click(object sender, RoutedEventArgs e)
         {
-            // Set the index to 0, and show it.
-            currentIndex = 0;
-            DisplayCar(listOfCars[currentIndex]);
-            // Previous is disabled, Next is enabled.
-            buttonPrevious.IsEnabled = false;
-            buttonNext.IsEnabled = true;
-        }
-
-        /// <summary>
-        /// Display the last car in the list in the form.
-        /// </summary>
-        private void ShowLastCar(object sender, RoutedEventArgs e)
-        {
-            // Set the index to the end of the list, and show it.
-            currentIndex = listOfCars.Count - 1;
-            DisplayCar(listOfCars[currentIndex]);
-            // Next is disabled, Previous is enabled.
-            buttonPrevious.IsEnabled = true;
-            buttonNext.IsEnabled = false;
-        }
-
-        /// <summary>
-        /// Display the previous car in the list in the form.
-        /// </summary>
-        private void ShowPreviousCar(object sender, RoutedEventArgs e)
-        {
-            // Reduce the current index by 1.
-            currentIndex -= 1;
-            // If the index is 0 (or less?), set it to 0 and disable Previous.
-            if (currentIndex <= 0)
+            try
             {
-                currentIndex = 0;
-                buttonPrevious.IsEnabled = false;
-            }
-            // Display the car at this index and enable the Next button.
-            DisplayCar(listOfCars[currentIndex]);
-            buttonNext.IsEnabled = true;
-        }
+                string type = ComboBoxMake.Text;
+                string model = ComboBoxModel.Text;
 
-        /// <summary>
-        /// Display the next car from the list in the form.
-        /// </summary>
-        private void ShowNextCar(object sender, RoutedEventArgs e)
-        {
-            // Increase the current index by 1.
-            currentIndex += 1;
-            // If at the end of the list, set the index to the maximum and disable Next.
-            if (currentIndex >= listOfCars.Count - 1)
+                // Check if year is selected
+             
+                string yearString = ComboBoxYear.SelectedItem?.ToString();
+                if (string.IsNullOrWhiteSpace(yearString))
+                {
+                    throw new ArgumentNullException("Year must be selected");
+                }
+                int year = int.Parse(yearString);
+
+                decimal price = decimal.Parse(TextBoxPrice.Text);
+                bool isNew = false; // hook up to a CheckBox if you have one
+
+                Vehicle vehicle;
+                if (type == "Car")
+                {
+                    vehicle = new Car(type, model, year, price, isNew);
+                }
+                else
+                {
+                    vehicle = new Motorcycle(type, model, year, price, isNew, false);
+                }
+
+                // Add to Vehicle list
+                listOfVehicles.Add(vehicle);
+
+                // Show in ListBox (calls ToString())
+                ListBoxVehicle.Items.Add(vehicle);
+
+                UpdateStatus($"Added {vehicle.Type}: {vehicle.Model}");
+                UpdateStatistics();
+            }
+            catch (ArgumentNullException ex)
             {
-                currentIndex = listOfCars.Count - 1;
-                buttonNext.IsEnabled = false;
+                MessageBox.Show(ex.Message, "Input Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ComboBoxModel.Focus();
+                UpdateStatus("Error: Model blank");
             }
-            // Display the car at this index and enable the Previous button.
-            DisplayCar(listOfCars[currentIndex]);
-            buttonPrevious.IsEnabled = true;
-        }
-
-        private void buttonEnter_Click(object sender, RoutedEventArgs e)
-        {
-            // to chech if the fields are empty when a person tries to enter a car
-            if (comboMake.SelectedIndex == -1 ||
-           comboYear.SelectedIndex == -1 ||
-           string.IsNullOrEmpty(textModel.Text) ||
-           string.IsNullOrEmpty(textPrice.Text))
+            catch (ArgumentOutOfRangeException ex)
             {
-                MessageBox.Show("Please fill in all fields before entering the car.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Input Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                TextBoxPrice.Focus();
+                UpdateStatus("Error: Invalid price");
             }
-            else {
-                // validation for the entry of the new or used car
-                    LabelResult.Content = "You have entered a " +
-                        (checkIsNew.IsChecked == true ? "new " : "used ") +
-                        comboYear.Text + " " +
-                        comboMake.Text + " " +
-                        textModel.Text + " for " +
-                        textPrice.Text + ".";
-            }
-
-
-            // get the fields values
-            string make = comboMake.Text;
-            string model = textModel.Text;
-            int year = int.Parse(comboYear.Text);
-            bool isNew = checkIsNew.IsChecked ?? false;
-            decimal price = decimal.Parse(textPrice.Text);
-
-            // adding or updating cars in the list
-
-            if ( listCars.SelectedIndex == -1 )
-
+            catch (FormatException ex)
             {
-                Car newCar = new Car(make, model, year, price, isNew);
-                listOfCars.Add(newCar);
-
+                MessageBox.Show("Please enter a valid price.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                TextBoxPrice.Focus();
+                UpdateStatus("Error: Invalid price format");
             }
-            else
-            {  Car excistingCar =  listOfCars[listCars.SelectedIndex];
-                excistingCar.Make = make;
-                excistingCar.Model = model;
-                excistingCar.Year = year;
-                excistingCar.Price = decimal.Parse(textPrice.Text);
-                excistingCar.IsNew = isNew;
-                LabelResult.Content = "Car is updated successfully.";
-            }
-
-            // refresh the listbox
-            listCars.Items.Clear();
-            foreach (var car in listOfCars)
+            catch (Exception ex)
             {
-                // adding cars to the listbox
-                listCars.Items.Add(
-                     "#" + car.IdentificationNumber + " " +
-                     car.Year + " " + car.Make + " " + car.Model + "  " +
-                     (car.IsNew ? "New" : "Used") + "  " +
-                     car.Price.ToString("C")
-                 );
-
+                MessageBox.Show("Unexpected error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                UpdateStatus("Error encountered");
             }
         }
 
-        // Reseting the inputs
-        private void buttonReset_Click(object sender, RoutedEventArgs e)
+        private void UpdateStatistics()
         {
-            comboMake.SelectedIndex = -1;
-            comboYear.SelectedIndex = -1;
-            textModel.Clear();
-            textPrice.Clear();
-            checkIsNew.IsChecked = false;
-            LabelResult.Content = string.Empty;
-            listCars.Items.Clear();
+            int count = listOfVehicles.Count;
+            decimal total = listOfVehicles.Sum(vehicle => vehicle.Price);
+            decimal average = count > 0 ? total / count : 0;
 
-
-
+            LabelNumberOfVehicles.Content = $"Number Of Vehicles: {count}";
+            LabelTotalPrice.Content = $"Total Price: {total:C}";
+            LabelAveragePrice.Content = $"Average Price: {average:C}";
+        }
+        private void UpdateStatus(string message)
+        {
 
         }
-        // Exit the application
-        private void buttonExit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
+
+
     }
 }

@@ -1,7 +1,7 @@
-﻿<Application x:Class="CarViewer.App"
+﻿<Application x:Class="CarViewer3.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:CarViewer"
+             xmlns:local="clr-namespace:CarViewer3"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
